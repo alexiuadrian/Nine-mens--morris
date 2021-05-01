@@ -22,12 +22,12 @@ class Joc:
     GOL = '#'
 
     @classmethod
-    def initializeaza(cls, display, NR_COLOANE=3, dim_celula=100):
+    def initializeaza(cls, display, NR_COLOANE=3, dim_celula=200):
         cls.display = display
         cls.dim_celula = dim_celula
-        cls.x_img = pygame.image.load('ics.png')
+        cls.x_img = pygame.image.load('black.png')
         cls.x_img = pygame.transform.scale(cls.x_img, (dim_celula, dim_celula))
-        cls.zero_img = pygame.image.load('zero.png')
+        cls.zero_img = pygame.image.load('white.png')
         cls.zero_img = pygame.transform.scale(cls.zero_img, (dim_celula, dim_celula))
         cls.celuleGrid = []  # este lista cu patratelele din grid
         for linie in range(NR_COLOANE):
@@ -278,7 +278,7 @@ def main():
     pygame.init()
     pygame.display.set_caption('x si 0')
     # dimensiunea ferestrei in pixeli
-    ecran = pygame.display.set_mode(size=(302, 302))  # N *100+ N-1
+    ecran = pygame.display.set_mode(size=(602, 602))  # N *100+ N-1
     Joc.initializeaza(ecran)
 
     de_mutat = False
