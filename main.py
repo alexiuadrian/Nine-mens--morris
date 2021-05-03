@@ -11,6 +11,15 @@ def elem_identice(lista):
         return lista[0] if lista[0] != Joc.GOL else False
     return False
 
+def is_in_circle(point, center):
+        points_in_circle = []
+
+        for line in range(center[1] - 10, center[1] + 10):
+            for column in range(center[1] - 10, center[1] + 10):
+                if column == point[0] and line == point[1]:
+                    return True
+        
+        return False
 
 class Joc:
     """
@@ -20,16 +29,23 @@ class Joc:
     JMIN = None
     JMAX = None
     GOL = '#'
+    SCOR_JMIN = 0
+    SCOR_JMAX = 0
 
     @classmethod
-    def initializeaza(cls, display, NR_COLOANE=3, dim_celula=200):
+    def initializeaza(cls, display, NR_COLOANE=3, dim_celula=40):
         cls.display = display
         cls.dim_celula = dim_celula
-        cls.x_img = pygame.image.load('black.png')
+        cls.x_img = pygame.image.load('white.png')
         cls.x_img = pygame.transform.scale(cls.x_img, (dim_celula, dim_celula))
-        cls.zero_img = pygame.image.load('white.png')
+        cls.zero_img = pygame.image.load('black.png')
         cls.zero_img = pygame.transform.scale(cls.zero_img, (dim_celula, dim_celula))
-        cls.celuleGrid = []  # este lista cu patratelele din grid
+        cls.background_image = pygame.image.load("background.png").convert()
+
+        cls.celuleGrid = [(30, 30), (300, 30), (570, 30), (123, 122), (300, 122), (477, 122), (214, 215), (300, 215), (386, 215), 
+        (30, 300), (123, 300), (214, 300), (386, 300), (477, 300), (570, 300), (123, 478), (300, 478), (477, 478), (30, 570),
+        (300, 570), (570, 570)]  # este lista cu cercurile din colturi
+
         for linie in range(NR_COLOANE):
             for coloana in range(NR_COLOANE):
                 patr = pygame.Rect(coloana * (dim_celula + 1), linie * (dim_celula + 1), dim_celula, dim_celula)
@@ -47,13 +63,64 @@ class Joc:
             else:
                 # altfel o desenez cu alb
                 culoare = (255, 255, 255)
-            pygame.draw.rect(self.__class__.display, culoare, self.__class__.celuleGrid[ind])  # alb = (255,255,255)
+
+            #pygame.draw.rect(self.__class__.display, culoare, self.__class__.celuleGrid[ind])  # alb = (255,255,255)
+
+            self.__class__.display.blit(self.background_image, [0, 0])
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (30, 30), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (300, 30), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (570, 30), 10)
+
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (123, 122), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (300, 122), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (477, 122), 10)
+
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (214, 215), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (300, 215), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (386, 215), 10)
+
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (30, 300), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (123, 300), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (214, 300), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (386, 300), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (477, 300), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (570, 300), 10)
+
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (123, 478), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (300, 478), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (477, 478), 10)
+
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (30, 570), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (300, 570), 10)
+
+            pygame.draw.circle(self.__class__.display, (0, 0, 0), (570, 570), 10)
+
             if self.matr[ind] == 'x':
                 self.__class__.display.blit(self.__class__.x_img, (
-                coloana * (self.__class__.dim_celula + 1), linie * (self.__class__.dim_celula + 1)))
+                30, 30))
             elif self.matr[ind] == '0':
                 self.__class__.display.blit(self.__class__.zero_img, (
-                coloana * (self.__class__.dim_celula + 1), linie * (self.__class__.dim_celula + 1)))
+                300, 30))
         pygame.display.flip()  # obligatoriu pentru a actualiza interfata (desenul)
 
     # pygame.display.update()
@@ -66,18 +133,26 @@ class Joc:
         return cls.JMAX if jucator == cls.JMIN else cls.JMIN
 
     def final(self):
-        rez = (elem_identice(self.matr[0:3])
-               or elem_identice(self.matr[3:6])
-               or elem_identice(self.matr[6:9])
-               or elem_identice(self.matr[0:9:3])
-               or elem_identice(self.matr[1:9:3])
-               or elem_identice(self.matr[2:9:3])
-               or elem_identice(self.matr[0:9:4])
-               or elem_identice(self.matr[2:8:2]))
+
+        rez = (elem_identice([self.matr[0][0], self.matr[0][3], self.matr[0][6]])
+               or elem_identice([self.matr[0][0], self.matr[3][0], self.matr[6][0]])
+               or elem_identice([self.matr[6][0], self.matr[6][3], self.matr[6][6]])
+               or elem_identice([self.matr[0][6], self.matr[3][6], self.matr[6][6]])
+               or elem_identice([self.matr[1][1], self.matr[1][3], self.matr[1][5]])
+               or elem_identice([self.matr[1][5], self.matr[3][5], self.matr[5][5]])
+               or elem_identice([self.matr[5][1], self.matr[5][3], self.matr[5][5]])
+               or elem_identice([self.matr[1][1], self.matr[3][1], self.matr[5][1]])
+               or elem_identice([self.matr[2][2], self.matr[2][3], self.matr[2][4]])
+               or elem_identice([self.matr[2][4], self.matr[3][4], self.matr[4][4]])
+               or elem_identice([self.matr[4][4], self.matr[4][3], self.matr[4][2]])
+               or elem_identice([self.matr[2][2], self.matr[3][2], self.matr[4][2]])
+               or elem_identice([self.matr[0][3], self.matr[1][3], self.matr[2][3]])
+               or elem_identice([self.matr[3][4], self.matr[3][5], self.matr[3][6]])
+               or elem_identice([self.matr[4][3], self.matr[5][3], self.matr[6][3]])
+               or elem_identice([self.matr[3][0], self.matr[3][1], self.matr[3][2]]))
         if (rez):
+            # Elimina o piesa a celuilalt jucator
             return rez
-        elif self.__class__.GOL not in self.matr:
-            return 'remiza'
         else:
             return False
 
@@ -161,7 +236,7 @@ class Stare:
         return l_stari_mutari
 
     def __str__(self):
-        sir = str(self.tabla_joc) + "(Juc curent:" + self.j_curent + ")\n"
+        sir = str(self.tabla_joc) + "(Joc curent:" + self.j_curent + ")\n"
         return sir
 
 
@@ -276,7 +351,7 @@ def main():
 
     # setari interf grafica
     pygame.init()
-    pygame.display.set_caption('x si 0')
+    pygame.display.set_caption("Alexiu Adrian - Nine Men's Morris")
     # dimensiunea ferestrei in pixeli
     ecran = pygame.display.set_mode(size=(602, 602))  # N *100+ N-1
     Joc.initializeaza(ecran)
@@ -296,6 +371,12 @@ def main():
                 elif event.type == pygame.MOUSEBUTTONDOWN:
 
                     pos = pygame.mouse.get_pos()  # coordonatele clickului
+
+
+                    '''
+                    Aici de verificat unde se apasa!
+                    '''
+
 
                     for np in range(len(Joc.celuleGrid)):
 

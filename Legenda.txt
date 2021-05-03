@@ -1,0 +1,12 @@
+# - - # - - #
+- # - # - # -
+- - # # # - -
+# # # - # # #
+- - # # # - -
+- # - # - # -
+# - - # - - #
+
+A -> Alb
+N -> Negru
+# -> Spatiu gol
+- -> Zona inaccesibila (jucatorii nu pot face mutari pe aceste casute)
