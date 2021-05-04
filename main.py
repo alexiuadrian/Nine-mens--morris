@@ -3,14 +3,48 @@ import time
 import pygame
 import sys
 
+from pygame.time import Clock
+
 ADANCIME_MAX = 6
 
+# Aceasta functie va returna o lista cu toate mutarile valide a unui jucator
+# inainte ca acesta sa termine de asezat toate piesele pe tabla
+def mutari_valide_faza_1(jucator, matr):
+    mutari = []
+
+    for line in range(len(matr)):
+        for column in range(len(matr[line])):
+            if matr[line][column] == '#':
+                mutari.append((line, column))
+    
+    return mutari
+    
+# Aceasta functie va returna o lista cu toate mutarile valide ale unei piese
+# dupa ce au fost asezate toate pe tabla
+def mutari_valide_faza_2(poz, matr, jucator):
+    mutari_valide = []
+    
+    if poz[0] < -1 or poz[0] > len(matr[0] - 1) or poz[1] < -1 or poz[1] > len(matr[0] - 1):
+        return False
+    
+    # In aceasta lista adaug toti vecinii piesei
+    mutari = [(poz[0] - 1, poz[1] - 1), (poz[0] - 1, poz[1]), (poz[0] - 1, poz[1] + 1), (poz[0], poz[1] + 1),
+              (poz[0] + 1, poz[1] + 1), (poz[0] + 1, poz[1]), (poz[0] + 1, poz[1] - 1), (poz[0], poz[1] - 1)]
+
+    # Verific daca acesti vecini pot fi mutari valide
+    for possible_move in mutari:
+        if matr[possible_move[0]][possible_move[1]] != '-' and matr[possible_move[0]][possible_move[1]] != 'A' and matr[possible_move[0]][possible_move[1]] != 'N':
+            mutari_valide.append(possible_move)
+
+    return mutari
 
 def elem_identice(lista):
     if (all(elem == lista[0] for elem in lista[1:])):
         return lista[0] if lista[0] != Joc.GOL else False
     return False
 
+# Functia va fi folosita pentru a verifica daca user-ul a dat click
+# intr-unul din cercuri
 def is_in_circle(point, center):
         points_in_circle = []
 
@@ -29,8 +63,10 @@ class Joc:
     JMIN = None
     JMAX = None
     GOL = '#'
-    SCOR_JMIN = 0
-    SCOR_JMAX = 0
+    PIESE_JMIN = 9
+    PIESE_JMAX = 9
+    PIESE_PE_TABLA_JMIN = 0
+    PIESE_PE_TABLA_JMAX = 0
 
     @classmethod
     def initializeaza(cls, display, NR_COLOANE=3, dim_celula=40):
@@ -127,6 +163,16 @@ class Joc:
 
     def __init__(self, tabla=None):
         self.matr = tabla or [self.__class__.GOL] * 9
+        if tabla != None:
+            self.matr = tabla
+        else:
+            self.matr = [['#', '-', '-', '#', '-', '-', '#'],
+                         ['-', '#', '-', '#', '-', '#', '-'],
+                         ['-', '-', '#', '#', '#', '-', '-'],
+                         ['#', '#', '#', '-', '#', '#', '#'],
+                         ['-', '-', '#', '#', '#', '-', '-'],
+                         ['-', '#', '-', '#', '-', '#', '-'],
+                         ['#', '-', '-', '#', '-', '-', '#']]
 
     @classmethod
     def jucator_opus(cls, jucator):
@@ -134,35 +180,52 @@ class Joc:
 
     def final(self):
 
-        rez = (elem_identice([self.matr[0][0], self.matr[0][3], self.matr[0][6]])
-               or elem_identice([self.matr[0][0], self.matr[3][0], self.matr[6][0]])
-               or elem_identice([self.matr[6][0], self.matr[6][3], self.matr[6][6]])
-               or elem_identice([self.matr[0][6], self.matr[3][6], self.matr[6][6]])
-               or elem_identice([self.matr[1][1], self.matr[1][3], self.matr[1][5]])
-               or elem_identice([self.matr[1][5], self.matr[3][5], self.matr[5][5]])
-               or elem_identice([self.matr[5][1], self.matr[5][3], self.matr[5][5]])
-               or elem_identice([self.matr[1][1], self.matr[3][1], self.matr[5][1]])
-               or elem_identice([self.matr[2][2], self.matr[2][3], self.matr[2][4]])
-               or elem_identice([self.matr[2][4], self.matr[3][4], self.matr[4][4]])
-               or elem_identice([self.matr[4][4], self.matr[4][3], self.matr[4][2]])
-               or elem_identice([self.matr[2][2], self.matr[3][2], self.matr[4][2]])
-               or elem_identice([self.matr[0][3], self.matr[1][3], self.matr[2][3]])
-               or elem_identice([self.matr[3][4], self.matr[3][5], self.matr[3][6]])
-               or elem_identice([self.matr[4][3], self.matr[5][3], self.matr[6][3]])
-               or elem_identice([self.matr[3][0], self.matr[3][1], self.matr[3][2]]))
-        if (rez):
-            # Elimina o piesa a celuilalt jucator
-            return rez
+        # rez = (elem_identice([self.matr[0][0], self.matr[0][3], self.matr[0][6]])
+        #        or elem_identice([self.matr[0][0], self.matr[3][0], self.matr[6][0]])
+        #        or elem_identice([self.matr[6][0], self.matr[6][3], self.matr[6][6]])
+        #        or elem_identice([self.matr[0][6], self.matr[3][6], self.matr[6][6]])
+        #        or elem_identice([self.matr[1][1], self.matr[1][3], self.matr[1][5]])
+        #        or elem_identice([self.matr[1][5], self.matr[3][5], self.matr[5][5]])
+        #        or elem_identice([self.matr[5][1], self.matr[5][3], self.matr[5][5]])
+        #        or elem_identice([self.matr[1][1], self.matr[3][1], self.matr[5][1]])
+        #        or elem_identice([self.matr[2][2], self.matr[2][3], self.matr[2][4]])
+        #        or elem_identice([self.matr[2][4], self.matr[3][4], self.matr[4][4]])
+        #        or elem_identice([self.matr[4][4], self.matr[4][3], self.matr[4][2]])
+        #        or elem_identice([self.matr[2][2], self.matr[3][2], self.matr[4][2]])
+        #        or elem_identice([self.matr[0][3], self.matr[1][3], self.matr[2][3]])
+        #        or elem_identice([self.matr[3][4], self.matr[3][5], self.matr[3][6]])
+        #        or elem_identice([self.matr[4][3], self.matr[5][3], self.matr[6][3]])
+        #        or elem_identice([self.matr[3][0], self.matr[3][1], self.matr[3][2]])) 
+
+
+
+        if self.PIESE_JMIN <= 2:
+            return self.JMAX
+        elif self.PIESE_JMAX <= 2:
+            return self.JMIN
         else:
             return False
 
     def mutari(self, jucator_opus):
         l_mutari = []
-        for i in range(len(self.matr)):
-            if self.matr[i] == self.__class__.GOL:
-                matr_tabla_noua = list(self.matr)
-                matr_tabla_noua[i] = jucator_opus
-                l_mutari.append(Joc(matr_tabla_noua))
+
+        if self.PIESE_PE_TABLA_JMAX < 7:
+            for i in range(len(self.matr)):
+                if self.matr[i] == '#':
+                    matr_tabla_noua = list(self.matr)
+                    matr_tabla_noua[i] = jucator_opus
+                    l_mutari.append(Joc(matr_tabla_noua))
+        else:
+            for line in range(len(self.matr[0])):
+                for column in range(len(self.matr[line])):
+                    if self.matr[line][column] == jucator_opus:
+                        mutari_posibile = mutari_valide_faza_2((line, column), self.matr)
+
+                        for position in mutari_posibile:
+                            matr_tabla_noua = list(self.matr)
+                            matr_tabla_noua[position[0] * 7 + position[1]] = jucator_opus
+                            l_mutari.append(Joc(matr_tabla_noua))
+
         return l_mutari
 
     # linie deschisa inseamna linie pe care jucatorul mai poate forma o configuratie castigatoare
@@ -197,9 +260,13 @@ class Joc:
             return (self.linii_deschise(self.__class__.JMAX) - self.linii_deschise(self.__class__.JMIN))
 
     def __str__(self):
-        sir = (" ".join([str(x) for x in self.matr[0:3]]) + "\n" +
-               " ".join([str(x) for x in self.matr[3:6]]) + "\n" +
-               " ".join([str(x) for x in self.matr[6:9]]) + "\n")
+        sir = ""
+
+        for l in range(len(self.matr[0])):
+            for c in range(len(self.matr[l])):
+                sir = sir + str(self.matr[l][c]) + " "
+        
+            sir = sir + "\n"
 
         return sir
 
