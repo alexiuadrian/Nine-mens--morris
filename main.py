@@ -7,6 +7,146 @@ from pygame.time import Clock
 
 ADANCIME_MAX = 6
 
+# Functia verifica toate posibilitatile de formare de moara
+def forms_mill(position, matr, jucator):
+    if position[0] == 0 and position[1] == 0:
+        if matr[0][3] == jucator and matr[0][6] == jucator:
+            return True
+        if matr[3][0] == jucator and matr[6][0] == jucator:
+            return True
+            
+    if position[0] == 0 and position[1] == 3:
+        if matr[0][0] == jucator and matr[0][6] == jucator:
+            return True
+        if matr[1][3] == jucator and matr[2][3] == jucator:
+            return True 
+
+    if position[0] == 0 and position[1] == 6:
+        if matr[0][0] == jucator and matr[0][3] == jucator:
+            return True
+        if matr[3][6] == jucator and matr[6][6] == jucator:
+            return True
+
+
+    if position[0] == 1 and position[1] == 1:
+        if matr[1][3] == jucator and matr[1][5] == jucator:
+            return True
+        if matr[3][1] == jucator and matr[5][1] == jucator:
+            return True
+
+    if position[0] == 1 and position[1] == 3:
+        if matr[1][1] == jucator and matr[1][5] == jucator:
+            return True
+        if matr[0][3] == jucator and matr[2][3] == jucator:
+            return True
+
+    if position[0] == 1 and position[1] == 5:
+        if matr[1][0] == jucator and matr[1][3] == jucator:
+            return True
+        if matr[3][5] == jucator and matr[5][5] == jucator:
+            return True
+
+
+    if position[0] == 2 and position[1] == 2:
+        if matr[2][3] == jucator and matr[2][4] == jucator:
+            return True
+        if matr[3][2] == jucator and matr[4][2] == jucator:
+            return True
+    
+    if position[0] == 2 and position[1] == 3:
+        if matr[2][2] == jucator and matr[2][4] == jucator:
+            return True
+        if matr[1][3] == jucator and matr[0][3] == jucator:
+            return True
+
+    if position[0] == 2 and position[1] == 4:
+        if matr[2][2] == jucator and matr[2][3] == jucator:
+            return True
+        if matr[3][4] == jucator and matr[4][4] == jucator:
+            return True
+
+
+    if position[0] == 3 and position[1] == 0:
+        if matr[3][1] == jucator and matr[3][2] == jucator:
+            return True
+        if matr[0][0] == jucator and matr[6][0] == jucator:
+            return True
+
+    if position[0] == 3 and position[1] == 1:
+        if matr[3][0] == jucator and matr[3][2] == jucator:
+            return True
+        if matr[1][1] == jucator and matr[5][1] == jucator:
+            return True
+
+    if position[0] == 3 and position[1] == 2:
+        if matr[3][0] == jucator and matr[3][1] == jucator:
+            return True
+        if matr[2][2] == jucator and matr[4][2] == jucator:
+            return True
+    
+    if position[0] == 3 and position[1] == 4:
+        if matr[3][5] == jucator and matr[3][6] == jucator:
+            return True
+        if matr[2][4] == jucator and matr[4][4] == jucator:
+            return True
+    
+    if position[0] == 3 and position[1] == 5:
+        if matr[3][4] == jucator and matr[3][6] == jucator:
+            return True
+        if matr[1][5] == jucator and matr[5][5] == jucator:
+            return True
+    
+    if position[0] == 3 and position[1] == 6:
+        if matr[3][4] == jucator and matr[3][5] == jucator:
+            return True
+        if matr[0][6] == jucator and matr[6][6] == jucator:
+            return True
+
+    
+    if position[0] == 4 and position[1] == 2:
+        if matr[4][3] == jucator and matr[4][4] == jucator:
+            return True
+        if matr[3][3] == jucator and matr[2][3] == jucator:
+            return True
+    
+    if position[0] == 4 and position[1] == 3:
+        if matr[4][2] == jucator and matr[4][4] == jucator:
+            return True
+        if matr[5][3] == jucator and matr[6][3] == jucator:
+            return True
+    
+    if position[0] == 4 and position[1] == 4:
+        if matr[4][2] == jucator and matr[4][3] == jucator:
+            return True
+        if matr[3][4] == jucator and matr[2][4] == jucator:
+            return True
+
+
+    if position[0] == 5 and position[1] == 1:
+        if matr[5][3] == jucator and matr[5][5] == jucator:
+            return True
+        if matr[3][1] == jucator and matr[1][1] == jucator:
+            return True
+
+    if position[0] == 5 and position[1] == 3:
+        if matr[5][1] == jucator and matr[5][5] == jucator:
+            return True
+        if matr[5][3] == jucator and matr[5][6] == jucator:
+            return True
+
+    if position[0] == 5 and position[1] == 5:
+        if matr[5][1] == jucator and matr[5][3] == jucator:
+            return True
+        if matr[5][4] == jucator and matr[5][6] == jucator:
+            return True
+    
+
+    if position[0] == 6 and position[1] == 0:
+        if matr[6][3] == jucator and matr[6][6] == jucator:
+            return True
+        if matr[3][0] == jucator and matr[0][0] == jucator:
+            return True
+
 # Aceasta functie va returna o lista cu toate mutarile valide a unui jucator
 # inainte ca acesta sa termine de asezat toate piesele pe tabla
 def mutari_valide_faza_1(jucator, matr):
@@ -33,7 +173,7 @@ def mutari_valide_faza_2(poz, matr, jucator):
 
     # Verific daca acesti vecini pot fi mutari valide
     for possible_move in mutari:
-        if matr[possible_move[0]][possible_move[1]] != '-' and matr[possible_move[0]][possible_move[1]] != 'A' and matr[possible_move[0]][possible_move[1]] != 'N':
+        if matr[possible_move[0]][possible_move[1]] == '#':
             mutari_valide.append(possible_move)
 
     return mutari
@@ -224,6 +364,8 @@ class Joc:
                         for position in mutari_posibile:
                             matr_tabla_noua = list(self.matr)
                             matr_tabla_noua[position[0] * 7 + position[1]] = jucator_opus
+                            # Verifica daca se formeaza o moara apeland forms_mill(position, self.matr, jucator_opus)
+                            # Daca se formeaza, genereaza toate mutarile posibile fara o piesa din cealalta culoare
                             l_mutari.append(Joc(matr_tabla_noua))
 
         return l_mutari
