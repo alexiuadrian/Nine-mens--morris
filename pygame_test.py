@@ -3,7 +3,7 @@ from pygame.draw import circle
 import sys
 
 celuleGrid = [(30, 30), (300, 30), (570, 30), (123, 122), (300, 122), (477, 122), (214, 215), (300, 215), (386, 215), 
-        (30, 300), (123, 300), (214, 300), (386, 300), (477, 300), (570, 300), (123, 478), (300, 478), (477, 478), (30, 570),
+        (30, 300), (123, 300), (214, 300), (386, 300), (477, 300), (570, 300), (214, 385), (300, 385), (386, 385), (123, 478), (300, 478), (477, 478), (30, 570),
         (300, 570), (570, 570)]
 
 pygame.init()
@@ -48,6 +48,13 @@ pygame.draw.circle(ecran, (0, 0, 0), (386, 300), 10)
 pygame.draw.circle(ecran, (0, 0, 0), (477, 300), 10)
 
 pygame.draw.circle(ecran, (0, 0, 0), (570, 300), 10)
+
+
+pygame.draw.circle(ecran, (0, 0, 0), (214, 385), 10)
+
+pygame.draw.circle(ecran, (0, 0, 0), (300, 385), 10)
+
+pygame.draw.circle(ecran, (0, 0, 0), (386, 385), 10)
 
 
 pygame.draw.circle(ecran, (0, 0, 0), (123, 478), 10)
@@ -103,6 +110,13 @@ while True:
     pygame.draw.circle(ecran, (0, 0, 0), (570, 300), 10)
 
 
+    pygame.draw.circle(ecran, (0, 0, 0), (214, 385), 10)
+
+    pygame.draw.circle(ecran, (0, 0, 0), (300, 385), 10)
+
+    pygame.draw.circle(ecran, (0, 0, 0), (386, 385), 10)
+
+
     pygame.draw.circle(ecran, (0, 0, 0), (123, 478), 10)
 
     pygame.draw.circle(ecran, (0, 0, 0), (300, 478), 10)
@@ -117,8 +131,9 @@ while True:
     pygame.draw.circle(ecran, (0, 0, 0), (570, 570), 10)
 
     def is_in_circle(point, center):
+        print()
         for line in range(center[1] - 10, center[1] + 10):
-            for column in range(center[1] - 10, center[1] + 10):
+            for column in range(center[0] - 10, center[0] + 10):
                 if column == point[0] and line == point[1]:
                     return True
         
@@ -131,9 +146,11 @@ while True:
         elif event.type == pygame.MOUSEBUTTONDOWN:
     
             pos = pygame.mouse.get_pos()
-
-            if is_in_circle(pos, (30, 30)):
-               pygame.draw.circle(ecran, (255, 255, 255), (30, 30), 15)
+            for position in celuleGrid:
+                if is_in_circle(pos, position):
+                    
+                    #print((position[1], position[0]))
+                    pygame.draw.circle(ecran, (255, 255, 255), (position[0], position[1]), 15)
 
             pygame.display.flip()
 
